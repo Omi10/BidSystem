@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>BidModel.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BootStrap</a> &gt; <a href="index.source.html" class="el_package">com.practo.om.bidsystem.models</a> &gt; <span class="el_source">BidModel.java</span></div><h1>BidModel.java</h1><pre class="source lang-java linenums">package com.practo.om.bidsystem.models;
+
+<span class="fc" id="L3">public class BidModel {</span>
+
+	private int bidId;
+	private String madeBy;
+	private String item;
+	private int bidValue;
+	private boolean isLatestBid;
+	private boolean isWon;
+	private String bidTime;
+	private int startBidValue;
+	private String description;
+	private String bidEndTime;
+	private int itemId;
+
+	public int getItemId() {
+<span class="nc" id="L18">		return itemId;</span>
+	}
+
+	public void setItemId(int itemId) {
+<span class="fc" id="L22">		this.itemId = itemId;</span>
+<span class="fc" id="L23">	}</span>
+
+	public String getDescription() {
+<span class="nc" id="L26">		return description;</span>
+	}
+
+	public String getBidEndTime() {
+<span class="nc" id="L30">		return bidEndTime;</span>
+	}
+
+	public void setBidEndTime(String bidEndTime) {
+<span class="fc" id="L34">		this.bidEndTime = bidEndTime;</span>
+<span class="fc" id="L35">	}</span>
+
+	public void setDescription(String description) {
+<span class="fc" id="L38">		this.description = description;</span>
+<span class="fc" id="L39">	}</span>
+
+	public int getStartBidValue() {
+<span class="nc" id="L42">		return startBidValue;</span>
+	}
+
+	public void setStartBidValue(int startBidValue) {
+<span class="fc" id="L46">		this.startBidValue = startBidValue;</span>
+<span class="fc" id="L47">	}</span>
+
+	public String getBidTime() {
+<span class="nc" id="L50">		return bidTime;</span>
+	}
+
+	public void setBidTime(String bidTime) {
+<span class="fc" id="L54">		this.bidTime = bidTime;</span>
+<span class="fc" id="L55">	}</span>
+
+	public int getBidId() {
+<span class="fc" id="L58">		return bidId;</span>
+	}
+
+	public void setBidId(int bidId) {
+<span class="fc" id="L62">		this.bidId = bidId;</span>
+<span class="fc" id="L63">	}</span>
+
+	public String getMadeBy() {
+<span class="nc" id="L66">		return madeBy;</span>
+	}
+
+	public void setMadeBy(String madeBy) {
+<span class="fc" id="L70">		this.madeBy = madeBy;</span>
+<span class="fc" id="L71">	}</span>
+
+	public String getItem() {
+<span class="nc" id="L74">		return item;</span>
+	}
+
+	public void setItem(String item) {
+<span class="fc" id="L78">		this.item = item;</span>
+<span class="fc" id="L79">	}</span>
+
+	public int getBidValue() {
+<span class="fc" id="L82">		return bidValue;</span>
+	}
+
+	public void setBidValue(int bidValue) {
+<span class="fc" id="L86">		this.bidValue = bidValue;</span>
+<span class="fc" id="L87">	}</span>
+
+	public boolean isLatestBid() {
+<span class="nc" id="L90">		return isLatestBid;</span>
+	}
+
+	public void setLatestBid(boolean isLatestBid) {
+<span class="fc" id="L94">		this.isLatestBid = isLatestBid;</span>
+<span class="fc" id="L95">	}</span>
+
+	public boolean isWon() {
+<span class="nc" id="L98">		return isWon;</span>
+	}
+
+	public void setWon(boolean isWon) {
+<span class="fc" id="L102">		this.isWon = isWon;</span>
+<span class="fc" id="L103">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ItemDaoImp.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BootStrap</a> &gt; <a href="index.source.html" class="el_package">com.practo.om.bidsystem.dao</a> &gt; <span class="el_source">ItemDaoImp.java</span></div><h1>ItemDaoImp.java</h1><pre class="source lang-java linenums">package com.practo.om.bidsystem.dao;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.transaction.Transactional;
+
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.exception.JDBCConnectionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.practo.om.bidsystem.entities.Category;
+import com.practo.om.bidsystem.entities.Item;
+
+@Repository
+@Transactional
+<span class="fc" id="L24">public class ItemDaoImp implements ItemDao {</span>
+
+	@Autowired
+	private SessionFactory sessionFactory;
+
+	private Session getSession() {
+<span class="fc" id="L30">		return sessionFactory.getCurrentSession();</span>
+	}
+
+	@Override
+	public void save(Item Item) {
+<span class="fc" id="L35">		getSession().save(Item);</span>
+<span class="fc" id="L36">	}</span>
+
+	@Override
+	public Item getItem(int ItemId) {
+<span class="fc" id="L40">		return getSession().get(Item.class, ItemId);</span>
+	}
+
+	@SuppressWarnings(&quot;unchecked&quot;)
+	@Override
+	public List&lt;Item&gt; getItems() throws JDBCConnectionException {
+<span class="fc" id="L46">		return getSession().createQuery(&quot;from Item&quot;).list();</span>
+
+	}
+	
+
+	@SuppressWarnings(&quot;unchecked&quot;)
+	@Override
+	public List&lt;Item&gt; getUserItems(int userId) throws JDBCConnectionException {
+<span class="fc" id="L54">		Query query = getSession().createQuery(&quot;from Item where user.id=:userId&quot;);</span>
+<span class="fc" id="L55">		query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="fc" id="L56">		List&lt;Item&gt; result = query.list();</span>
+<span class="fc" id="L57">		return result;</span>
+
+	}
+	
+	
+	@SuppressWarnings(&quot;unchecked&quot;)
+	@Override
+	public List&lt;Item&gt; getItemsForUser(int userId) throws JDBCConnectionException {
+<span class="nc" id="L65">		Date now = new Date();</span>
+<span class="nc" id="L66">		Query query = getSession().createQuery(&quot;from Item where user.id!=:userId and endTime&gt;:currentTime&quot;);</span>
+<span class="nc" id="L67">		query.setParameter(&quot;currentTime&quot;,now);</span>
+<span class="nc" id="L68">		query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L69">		List&lt;Item&gt; result = query.list();</span>
+<span class="nc" id="L70">		return result;</span>
+	}
+	
+	@SuppressWarnings(&quot;unchecked&quot;)
+	@Override
+	public List&lt;Item&gt; getItemsByFilter(int userId, int categoryId) throws JDBCConnectionException {
+<span class="nc" id="L76">		Date now = new Date();</span>
+<span class="nc" id="L77">		Query query = getSession().createQuery(&quot;from Item where user.id!=:userId and category.id=:categoryId and endTime&gt;:currentTime&quot;);</span>
+<span class="nc" id="L78">		query.setParameter(&quot;currentTime&quot;,now);</span>
+<span class="nc" id="L79">		query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L80">		query.setParameter(&quot;categoryId&quot;, categoryId);</span>
+<span class="nc" id="L81">		List&lt;Item&gt; result = query.list();</span>
+<span class="nc" id="L82">		return result;</span>
+	}
+	
+	@Override
+	public List&lt;Item&gt; getItemsByCategory(int categoryId) {
+<span class="nc" id="L87">		DetachedCriteria criteria = DetachedCriteria.forClass(Item.class);</span>
+<span class="nc" id="L88">		DetachedCriteria categoryCriteria = criteria.createCriteria(&quot;category&quot;)</span>
+<span class="nc" id="L89">				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);</span>
+		; // Item class has category object
+<span class="nc" id="L91">		categoryCriteria.add(Restrictions.eq(&quot;id&quot;, categoryId)); // category</span>
+																	// entity
+																	// has id
+																	// field
+<span class="nc" id="L95">		Criteria executableCriteria = categoryCriteria.getExecutableCriteria(getSession());</span>
+<span class="nc" id="L96">		return executableCriteria.list();</span>
+	}
+
+	@Override
+	public void update(Item Item) {
+<span class="nc" id="L101">		getSession().update(Item);</span>
+<span class="nc" id="L102">	}</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

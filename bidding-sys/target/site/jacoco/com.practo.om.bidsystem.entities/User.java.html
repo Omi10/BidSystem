@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BootStrap</a> &gt; <a href="index.source.html" class="el_package">com.practo.om.bidsystem.entities</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.practo.om.bidsystem.entities;
+
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+
+@Entity
+@Table(name = &quot;user&quot;, catalog = &quot;bid_system&quot;)
+public class User implements java.io.Serializable {
+
+	private Integer id;
+	private String name;
+	private String email;
+	private String contactNo;
+<span class="pc" id="L24">	private Set&lt;Bid&gt; bids = new HashSet&lt;Bid&gt;(0);</span>
+<span class="pc" id="L25">	private Set&lt;Item&gt; items = new HashSet&lt;Item&gt;(0);</span>
+<span class="pc" id="L26">	private Set&lt;Wallet&gt; wallets = new HashSet&lt;Wallet&gt;(0);</span>
+
+<span class="fc" id="L28">	public User() {</span>
+<span class="fc" id="L29">	}</span>
+
+<span class="nc" id="L31">	public User(String name, String email, String contactNo) {</span>
+<span class="nc" id="L32">		this.name = name;</span>
+<span class="nc" id="L33">		this.email = email;</span>
+<span class="nc" id="L34">		this.contactNo = contactNo;</span>
+<span class="nc" id="L35">	}</span>
+
+<span class="fc" id="L37">	public User(String name, String email) {</span>
+<span class="fc" id="L38">		this.name = name;</span>
+<span class="fc" id="L39">		this.email = email;</span>
+<span class="fc" id="L40">	}</span>
+
+	public User(String name, String email, String contactNo, String address, Set&lt;Bid&gt; bids, Set&lt;Item&gt; items,
+<span class="nc" id="L43">			Set&lt;Wallet&gt; wallets) {</span>
+<span class="nc" id="L44">		this.name = name;</span>
+<span class="nc" id="L45">		this.email = email;</span>
+<span class="nc" id="L46">		this.contactNo = contactNo;</span>
+<span class="nc" id="L47">		this.bids = bids;</span>
+<span class="nc" id="L48">		this.items = items;</span>
+<span class="nc" id="L49">		this.wallets = wallets;</span>
+<span class="nc" id="L50">	}</span>
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = &quot;id&quot;, unique = true, nullable = false)
+	public Integer getId() {
+<span class="fc" id="L56">		return this.id;</span>
+	}
+
+	public void setId(Integer id) {
+<span class="fc" id="L60">		this.id = id;</span>
+<span class="fc" id="L61">	}</span>
+
+	@Column(name = &quot;name&quot;, nullable = false)
+	public String getName() {
+<span class="fc" id="L65">		return this.name;</span>
+	}
+
+	public void setName(String name) {
+<span class="fc" id="L69">		this.name = name;</span>
+<span class="fc" id="L70">	}</span>
+
+	@Column(name = &quot;email&quot;, nullable = false)
+	public String getEmail() {
+<span class="fc" id="L74">		return this.email;</span>
+	}
+
+	public void setEmail(String email) {
+<span class="fc" id="L78">		this.email = email;</span>
+<span class="fc" id="L79">	}</span>
+
+	@Column(name = &quot;contact_no&quot;)
+	public String getContactNo() {
+<span class="fc" id="L83">		return this.contactNo;</span>
+	}
+
+	public void setContactNo(String contactNo) {
+<span class="fc" id="L87">		this.contactNo = contactNo;</span>
+<span class="fc" id="L88">	}</span>
+
+	/*
+	 * @OneToMany(fetch=FetchType.LAZY, mappedBy=&quot;user&quot;) public Set&lt;Bid&gt;
+	 * getBids() { return this.bids; }
+	 * 
+	 * public void setBids(Set&lt;Bid&gt; bids) { this.bids = bids; }
+	 * 
+	 * @OneToMany(fetch=FetchType.EAGER, mappedBy=&quot;user&quot;) public Set&lt;Item&gt;
+	 * getItems() { return this.items; }
+	 * 
+	 * public void setItems(Set&lt;Item&gt; items) { this.items = items; }
+	 * 
+	 * @OneToMany(fetch=FetchType.LAZY, mappedBy=&quot;user&quot;) public Set&lt;Wallet&gt;
+	 * getWallets() { return this.wallets; }
+	 * 
+	 * public void setWallets(Set&lt;Wallet&gt; wallets) { this.wallets = wallets; }
+	 */
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MappingUtility.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BootStrap</a> &gt; <a href="index.source.html" class="el_package">com.practo.om.bidsystem.utilities</a> &gt; <span class="el_source">MappingUtility.java</span></div><h1>MappingUtility.java</h1><pre class="source lang-java linenums">package com.practo.om.bidsystem.utilities;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.practo.om.bidsystem.entities.Bid;
+import com.practo.om.bidsystem.entities.Item;
+import com.practo.om.bidsystem.entities.User;
+import com.practo.om.bidsystem.models.BidModel;
+import com.practo.om.bidsystem.models.ItemModel;
+import com.practo.om.bidsystem.models.MakeBidModel;
+
+@Service
+<span class="fc" id="L19">public class MappingUtility {</span>
+
+	public ItemModel itemToItemModel(Item item) {
+<span class="fc" id="L22">		ItemModel itemModel = new ItemModel();</span>
+<span class="fc" id="L23">		itemModel.setItemId(item.getId());</span>
+<span class="fc" id="L24">		itemModel.setName(item.getItem());</span>
+
+<span class="pc bpc" id="L26" title="3 of 4 branches missed.">		if (item.getBidType() != null &amp;&amp; item.getBidType() == false)</span>
+<span class="nc" id="L27">			itemModel.setBidType(&quot;Closed&quot;);</span>
+<span class="pc bpc" id="L28" title="3 of 4 branches missed.">		else if (item.getBidType() != null &amp;&amp; item.getBidType() == true)</span>
+<span class="nc" id="L29">			itemModel.setBidType(&quot;Open&quot;);</span>
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">		if (item.getUser() != null)</span>
+<span class="fc" id="L31">			itemModel.setOwner(item.getUser().getName());</span>
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">		if (item.getDescription() != null)</span>
+<span class="fc" id="L33">			itemModel.setDescription(item.getDescription());</span>
+
+<span class="fc" id="L35">		itemModel.setStartBidAmount(item.getInitialPrice());</span>
+<span class="fc" id="L36">		Date bidTime = item.getEndTime();</span>
+<span class="fc" id="L37">		SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span>
+<span class="fc" id="L38">		itemModel.setBidEndTime(sdf.format(bidTime));</span>
+<span class="fc" id="L39">		return itemModel;</span>
+	}
+
+	public List&lt;ItemModel&gt; itemsToItemModels(List&lt;Item&gt; items) {
+<span class="fc" id="L43">		List&lt;ItemModel&gt; itemList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">		for (Item i : items)</span>
+<span class="fc" id="L45">			itemList.add(itemToItemModel(i));</span>
+<span class="fc" id="L46">		return itemList;</span>
+	}
+
+	public Item itemModelToItem(ItemModel itemModel) {
+<span class="fc" id="L50">		Item item = new Item();</span>
+<span class="fc" id="L51">		item.setItem(itemModel.getName());</span>
+<span class="fc" id="L52">		item.setInitialPrice(itemModel.getStartBidAmount());</span>
+<span class="fc" id="L53">		item.setDescription(itemModel.getDescription());</span>
+		//item.setCategory(category);
+		try {
+<span class="fc" id="L56">			SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd'T'HH:mm&quot;);</span>
+<span class="fc" id="L57">			Date date = sdf.parse(itemModel.getBidEndTime());</span>
+<span class="fc" id="L58">			item.setEndTime(date);</span>
+<span class="nc" id="L59">		} catch (ParseException pe) {</span>
+
+<span class="fc" id="L61">		}</span>
+<span class="fc" id="L62">		return item;</span>
+	}
+
+	public ItemModel updateItem(Item item, ItemModel itemModel) {
+<span class="nc" id="L66">		item.setInitialPrice(itemModel.getStartBidAmount());</span>
+<span class="nc" id="L67">		return itemModel;</span>
+	}
+
+	public BidModel bidToBidModel(Bid bid) {
+<span class="fc" id="L71">		BidModel bidModel = new BidModel();</span>
+<span class="fc" id="L72">		bidModel.setBidId(bid.getId());</span>
+<span class="fc" id="L73">		bidModel.setItemId(bid.getItem().getId());</span>
+<span class="fc" id="L74">		bidModel.setItem(bid.getItem().getItem()); // Get the Item Entity object</span>
+													// then fetch the item name
+													// from that object
+<span class="fc" id="L77">		bidModel.setLatestBid(bid.isIsRecent());</span>
+<span class="fc" id="L78">		bidModel.setWon(bid.isBidWon());</span>
+<span class="fc" id="L79">		bidModel.setMadeBy(bid.getUser().getName());</span>
+<span class="fc" id="L80">		bidModel.setBidValue(bid.getBidAmount());</span>
+<span class="fc" id="L81">		bidModel.setStartBidValue(bid.getItem().getInitialPrice());</span>
+<span class="fc" id="L82">		bidModel.setDescription(bid.getItem().getDescription());</span>
+
+<span class="fc" id="L84">		SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span>
+
+<span class="fc" id="L86">		Date bidTime = bid.getItem().getEndTime();</span>
+<span class="fc" id="L87">		bidModel.setBidEndTime(sdf.format(bidTime));</span>
+
+		//Date dt = new Date();
+		//String currentTime = sdf.format(dt);
+		//bidModel.setBidTime(currentTime);
+<span class="fc" id="L92">		bidModel.setBidTime(bid.getBidTime().toString());</span>
+<span class="fc" id="L93">		return bidModel;</span>
+	}
+
+	public List&lt;BidModel&gt; bidsToBidModels(List&lt;Bid&gt; bids) {
+<span class="fc" id="L97">		List&lt;BidModel&gt; bidModels = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">		for (Bid bid : bids) {</span>
+<span class="fc" id="L99">			bidModels.add(bidToBidModel(bid));</span>
+<span class="fc" id="L100">		}</span>
+<span class="fc" id="L101">		return bidModels;</span>
+	}
+
+	public Bid makeBidModelToBid(int itemId, MakeBidModel makeBidModel) {
+<span class="fc" id="L105">		Bid bid = new Bid();</span>
+<span class="fc" id="L106">		User user = new User();</span>
+<span class="fc" id="L107">		Item item = new Item();</span>
+<span class="fc" id="L108">		item.setId(itemId);</span>
+<span class="fc" id="L109">		user.setId(makeBidModel.getBidderId());</span>
+<span class="fc" id="L110">		bid.setUser(user);</span>
+<span class="fc" id="L111">		bid.setItem(item);</span>
+<span class="fc" id="L112">		bid.setBidAmount(makeBidModel.getBidValue());</span>
+<span class="fc" id="L113">		Date dt = new Date();</span>
+<span class="fc" id="L114">		bid.setBidTime(dt);</span>
+<span class="fc" id="L115">		return bid;</span>
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

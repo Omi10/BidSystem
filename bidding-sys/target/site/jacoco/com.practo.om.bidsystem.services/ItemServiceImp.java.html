@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ItemServiceImp.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BootStrap</a> &gt; <a href="index.source.html" class="el_package">com.practo.om.bidsystem.services</a> &gt; <span class="el_source">ItemServiceImp.java</span></div><h1>ItemServiceImp.java</h1><pre class="source lang-java linenums">package com.practo.om.bidsystem.services;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.practo.om.bidsystem.dao.CategoryDao;
+import com.practo.om.bidsystem.dao.ItemDao;
+import com.practo.om.bidsystem.dao.UserDao;
+import com.practo.om.bidsystem.entities.Category;
+import com.practo.om.bidsystem.entities.Item;
+import com.practo.om.bidsystem.models.ItemModel;
+import com.practo.om.bidsystem.utilities.Logger;
+import com.practo.om.bidsystem.utilities.MappingUtility;
+
+import inti.ws.spring.exception.client.BadRequestException;
+
+@Service
+@Transactional
+<span class="fc" id="L24">public class ItemServiceImp implements ItemService {</span>
+
+	@Autowired
+	MappingUtility mUtility;
+
+	@Autowired
+	ItemDao itemDao;
+
+	@Autowired
+	CategoryDao categoryDao;
+
+	@Autowired
+	UserDao userDao;
+
+<span class="fc" id="L38">	private static final Logger LOG = Logger.getInstance(ItemServiceImp.class);</span>
+
+	@Override
+	public List&lt;ItemModel&gt; getItemsByCategory(Map&lt;String, String[]&gt; parameters) {
+<span class="nc" id="L42">		List&lt;Item&gt; items = null;</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">		if (parameters.size() == 0) {</span>
+<span class="nc" id="L44">			items = (List&lt;Item&gt;) itemDao.getItems();</span>
+		} else {
+<span class="nc" id="L46">			int idValue = new Integer(parameters.get(&quot;categoryId&quot;)[0]);</span>
+<span class="nc" id="L47">			System.out.println(&quot;Idvalue ==&quot; + idValue);</span>
+<span class="nc" id="L48">			items = (List&lt;Item&gt;) itemDao.getItemsByCategory(idValue);</span>
+		}
+<span class="nc" id="L50">		LOG.info(&quot;Requested all items&quot;);</span>
+<span class="nc" id="L51">		List&lt;ItemModel&gt; itemModels = mUtility.itemsToItemModels(items);</span>
+<span class="nc" id="L52">		return itemModels;</span>
+	}
+
+	@Override
+	public List&lt;ItemModel&gt; getAllItems() {
+<span class="fc" id="L57">		List&lt;Item&gt; items = itemDao.getItems();</span>
+<span class="fc" id="L58">		LOG.info(&quot;Requested all items&quot;);</span>
+<span class="fc" id="L59">		List&lt;ItemModel&gt; itemModels = mUtility.itemsToItemModels(items);</span>
+<span class="fc" id="L60">		return itemModels;</span>
+	}
+	
+	
+	@Override
+	public List&lt;Category&gt; getAllCategories() {
+<span class="fc" id="L66">		List&lt;Category&gt; categories = categoryDao.getCategories();</span>
+<span class="fc" id="L67">		LOG.info(&quot;Requested all categories&quot;);</span>
+<span class="fc" id="L68">		return categories;</span>
+	}
+	
+	@Override
+	public Category addCategory(String categoryName) {
+<span class="fc" id="L73">           Category category=new Category(categoryName);</span>
+<span class="fc" id="L74">           categoryDao.save(category);</span>
+<span class="fc" id="L75">           return category;</span>
+	}
+	
+
+	@Override
+	public ItemModel getItem(int itemId) throws BadRequestException {
+<span class="fc bfc" id="L81" title="All 2 branches covered.">		if (itemId &lt; 0) {</span>
+<span class="fc" id="L82">			LOG.error(&quot;Invalid Item Id passed&quot;, new BadRequestException());</span>
+<span class="fc" id="L83">			throw new BadRequestException(&quot;Invalid parameters&quot;);</span>
+		}
+<span class="fc" id="L85">		LOG.info(&quot;Requested Item with Id=&quot; + itemId);</span>
+<span class="fc" id="L86">		Item item = itemDao.getItem(itemId);</span>
+<span class="fc" id="L87">		ItemModel itemModel = mUtility.itemToItemModel(item);</span>
+<span class="fc" id="L88">		return itemModel;</span>
+	}
+
+	@Override
+	public List&lt;ItemModel&gt; getUserItems(int userId) throws BadRequestException {
+<span class="fc bfc" id="L93" title="All 2 branches covered.">		if (userId &lt; 0) {</span>
+<span class="fc" id="L94">			LOG.error(&quot;Invalid UserId passed&quot;, new BadRequestException());</span>
+<span class="fc" id="L95">			throw new BadRequestException(&quot;Invalid parameters&quot;);</span>
+		}
+<span class="fc" id="L97">		List&lt;Item&gt; items = itemDao.getUserItems(userId);</span>
+<span class="fc" id="L98">		List&lt;ItemModel&gt; itemModels = mUtility.itemsToItemModels(items);</span>
+<span class="fc" id="L99">		return itemModels;</span>
+	}
+	
+	
+	@Override
+	public List&lt;ItemModel&gt; getItemsForUser(int userId) throws BadRequestException {
+<span class="nc bnc" id="L105" title="All 2 branches missed.">		if (userId &lt; 0) {</span>
+<span class="nc" id="L106">			LOG.error(&quot;Invalid UserId passed&quot;, new BadRequestException());</span>
+<span class="nc" id="L107">			throw new BadRequestException(&quot;Invalid parameters&quot;);</span>
+		}
+<span class="nc" id="L109">		List&lt;Item&gt; items = itemDao.getItemsForUser(userId);</span>
+<span class="nc" id="L110">		List&lt;ItemModel&gt; itemModels = mUtility.itemsToItemModels(items);</span>
+<span class="nc" id="L111">		return itemModels;</span>
+	}
+	
+	
+	@Override
+	public List&lt;ItemModel&gt; getItemsByFilter(int userId, int categoryId) throws BadRequestException {
+<span class="nc" id="L117">		List&lt;Item&gt; items = itemDao.getItemsByFilter(userId,categoryId);</span>
+<span class="nc" id="L118">		List&lt;ItemModel&gt; itemModels = mUtility.itemsToItemModels(items);</span>
+<span class="nc" id="L119">		return itemModels;</span>
+	}
+
+	@Override
+	public ItemModel addItem(ItemModel itemModel, int userId) throws BadRequestException {
+
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">		if (userId &lt; 0) {</span>
+<span class="nc" id="L126">			LOG.error(&quot;Invalid UserId passed&quot;, new BadRequestException());</span>
+<span class="nc" id="L127">			throw new BadRequestException(&quot;Invalid parameters&quot;);</span>
+		}
+<span class="fc" id="L129">		Item item = mUtility.itemModelToItem(itemModel);</span>
+<span class="fc" id="L130">		item.setUser(userDao.getUser(userId));</span>
+<span class="fc" id="L131">		Category category=categoryDao.getCategory(itemModel.getCategoryId());</span>
+<span class="fc" id="L132">		item.setCategory(category);</span>
+<span class="fc" id="L133">		itemDao.save(item);</span>
+<span class="fc" id="L134">		return itemModel;</span>
+	}
+
+	@Override
+	public ItemModel updateItem(int itemId, ItemModel itemModel) {
+<span class="nc" id="L139">		Item item = itemDao.getItem(itemId);</span>
+<span class="nc" id="L140">		mUtility.updateItem(item, itemModel);</span>
+<span class="nc" id="L141">		itemDao.update(item);</span>
+<span class="nc" id="L142">		LOG.info(&quot;Updated the Item with Id=&quot; + itemId);</span>
+<span class="nc" id="L143">		return itemModel;</span>
+	}
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>BidController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BootStrap</a> &gt; <a href="index.source.html" class="el_package">com.practo.om.bidsystem.controllers</a> &gt; <span class="el_source">BidController.java</span></div><h1>BidController.java</h1><pre class="source lang-java linenums">package com.practo.om.bidsystem.controllers;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.practo.om.bidsystem.entities.User;
+import com.practo.om.bidsystem.models.BidModel;
+import com.practo.om.bidsystem.models.MakeBidModel;
+import com.practo.om.bidsystem.models.ResultModel;
+import com.practo.om.bidsystem.services.BidService;
+
+import inti.ws.spring.exception.client.BadRequestException;
+
+@RestController
+<span class="fc" id="L26">public class BidController {</span>
+
+	@Autowired
+	BidService bidService;
+
+	@RequestMapping(value = &quot;/items/{itemId}/bids&quot;, method = RequestMethod.GET)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public List&lt;BidModel&gt; getItemBids(@PathVariable int itemId) throws BadRequestException {
+<span class="nc" id="L35">		List&lt;BidModel&gt; bidModels = null;</span>
+<span class="nc" id="L36">		bidModels = bidService.getItemBids(itemId);</span>
+<span class="nc" id="L37">		return bidModels;</span>
+	}
+
+	@RequestMapping(value = &quot;user/{userId}/bids&quot;, method = RequestMethod.GET)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public List&lt;BidModel&gt; getUserBids(@PathVariable int userId, HttpSession session) throws BadRequestException {
+<span class="nc" id="L44">		List&lt;BidModel&gt; bidModels = null;</span>
+<span class="nc" id="L45">		User user = (User) session.getAttribute(&quot;user&quot;);</span>
+<span class="nc" id="L46">		userId = user.getId();</span>
+<span class="nc" id="L47">		bidModels = bidService.getUserBids(userId);</span>
+<span class="nc" id="L48">		return bidModels;</span>
+	}
+	
+	@RequestMapping(value = &quot;user/{userId}/bids/resultsOut&quot;, method = RequestMethod.GET)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public List&lt;BidModel&gt; getUserBidsResultsOut(@PathVariable int userId, HttpSession session) throws BadRequestException {
+<span class="nc" id="L55">		List&lt;BidModel&gt; bidModels = null;</span>
+<span class="nc" id="L56">		User user = (User) session.getAttribute(&quot;user&quot;);</span>
+<span class="nc" id="L57">		userId = user.getId();</span>
+<span class="nc" id="L58">		bidModels = bidService.getUserBidsResultOut(userId);</span>
+<span class="nc" id="L59">		return bidModels;</span>
+	}
+	
+
+	@RequestMapping(value = &quot;items/{itemId}/bids&quot;, method = RequestMethod.POST)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.CREATED)
+	public MakeBidModel makeBid(@PathVariable int itemId, @RequestBody MakeBidModel makeBidModel, HttpSession session)
+			throws BadRequestException {
+<span class="nc" id="L68">		User user = (User) session.getAttribute(&quot;user&quot;);</span>
+<span class="nc" id="L69">		int userId = user.getId();</span>
+<span class="nc" id="L70">		makeBidModel.setBidderId(userId);</span>
+<span class="nc" id="L71">		return bidService.addBid(itemId, makeBidModel);</span>
+	}
+
+	@RequestMapping(value = &quot;items/{itemId}/bids/result&quot;, method = RequestMethod.GET)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.CREATED)
+	public ResultModel bidResult(@PathVariable int itemId) throws BadRequestException {
+<span class="nc" id="L78">		ResultModel resultModel = bidService.getBidResult(itemId);</span>
+<span class="nc" id="L79">		return resultModel;</span>
+	}
+
+	@RequestMapping(value = &quot;/bids/{bidId}&quot;, method = RequestMethod.DELETE)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public void deleteBid(@PathVariable int bidId)  throws BadRequestException {
+<span class="nc" id="L86">		bidService.deleteBid(bidId);</span>
+<span class="nc" id="L87">	}</span>
+
+	@RequestMapping(value = &quot;/bids/{bidId}&quot;, method = RequestMethod.PATCH)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public BidModel updateBid(@PathVariable int bidId, @RequestBody BidModel bidModel) throws BadRequestException {
+<span class="nc" id="L93">		return bidService.updateBid(bidId, bidModel);</span>
+	}
+
+	@RequestMapping(value = &quot;/bids/{bidId}&quot;, method = RequestMethod.GET)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public BidModel getBid(@PathVariable int bidId) {
+<span class="nc" id="L100">		return bidService.getBid(bidId);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>
