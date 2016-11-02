@@ -1,0 +1,3 @@
+# BidSystem
+
+Bidding system.
